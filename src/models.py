@@ -1,14 +1,24 @@
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, NonNegativeInt, PastDatetime
+from pydantic import BaseModel, ConfigDict, Field, NonNegativeInt, PastDatetime, EmailStr
 
 from .entities import StationType
+
+class System(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    name: str
+    supreme_commander: EmailStr
+    supreme_commander_name: str
+    date_created: PastDatetime
 
 
 class CreatePlanet(BaseModel):
     name: str = Field(strict=True)
     project_id: UUID
     population_millions: NonNegativeInt = Field(strict=True)
+    system_id: UUID
 
 
 class UpdatePlanet(BaseModel):
@@ -23,6 +33,8 @@ class Planet(BaseModel):
     name: str
     project_id: UUID
     population_millions: NonNegativeInt
+    system_id: UUID
+    system: System
 
 
 class CreateStation(BaseModel):
@@ -50,3 +62,7 @@ class Station(BaseModel):
     type: StationType
     planet_id: UUID
     planet: Planet
+
+class CreateSystem(BaseModel):
+    name: str
+    supreme_commander: EmailStr

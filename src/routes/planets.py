@@ -31,11 +31,16 @@ async def get_planet(planet_id: UUID, db: AsyncSession = Depends(get_db)):
 async def create_planet(
     request: models.CreatePlanet, db: AsyncSession = Depends(get_db)
 ):
+    system = await db.get(entities.System, request.system_id)
+    if system is None:
+        raise HTTPException(status_code=404, detail="Planet not found")
     planet = entities.Planet()
     planet.id = uuid4()
     planet.name = request.name
     planet.project_id = request.project_id
     planet.population_millions = request.population_millions
+    planet.system_id = request.system_id
+    planet.system = system
 
     db.add(planet)
     await db.commit()
