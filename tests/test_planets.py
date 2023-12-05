@@ -30,7 +30,9 @@ def mock_post():
         requests_mocker.get(
             "https://jsonplaceholder.typicode.com/users?email=hello@gmail.com",  # Match the target URL.
             status_code=200,  # The status code of the response.
-            json=[{"name": "tested"}],  # Optional. The value when .json() is called on the response.
+            json=[
+                {"name": "tested"}
+            ],  # Optional. The value when .json() is called on the response.
         )
 
         yield
@@ -45,7 +47,9 @@ async def test_planet_creation():
             headers={"Content-Type": "application/json"},
         )
     system = System.model_validate_json(response.content)
-    request = CreatePlanet(name="test", project_id=uuid.uuid4(), population_millions=1, system_id=system.id)
+    request = CreatePlanet(
+        name="test", project_id=uuid.uuid4(), population_millions=1, system_id=system.id
+    )
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(

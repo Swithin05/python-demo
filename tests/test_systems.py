@@ -1,4 +1,3 @@
-import uuid
 
 import pytest
 from httpx import AsyncClient
@@ -9,6 +8,7 @@ from src.database import SCHEMA_NAME, engine
 from src.main import app
 from src.models import CreateSystem, System
 import requests_mock
+
 
 @pytest.fixture(scope="session", autouse=True)
 async def session_cleanup():
@@ -29,7 +29,9 @@ def mock_post():
         requests_mocker.get(
             "https://jsonplaceholder.typicode.com/users?email=hello@gmail.com",  # Match the target URL.
             status_code=200,  # The status code of the response.
-            json=[{"name": "tested"}],  # Optional. The value when .json() is called on the response.
+            json=[
+                {"name": "tested"}
+            ],  # Optional. The value when .json() is called on the response.
         )
 
         yield

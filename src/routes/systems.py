@@ -24,9 +24,11 @@ async def create_system(
     system.id = uuid4()
     system.name = request.name
     system.supreme_commander = request.supreme_commander
-    response = requests.get(url='https://jsonplaceholder.typicode.com/users',
-                            params={'email': request.supreme_commander})
-    system.supreme_commander_name = response.json()[0].get('name', '')
+    response = requests.get(
+        url="https://jsonplaceholder.typicode.com/users",
+        params={"email": request.supreme_commander},
+    )
+    system.supreme_commander_name = response.json()[0].get("name", "")
     system.date_created = datetime.datetime.now()
     db.add(system)
     await db.commit()
@@ -34,10 +36,11 @@ async def create_system(
 
 
 @router.get("system_population/{system_id}")
-async def get_system_population(
-    system_id, db: AsyncSession = Depends(get_db)
-):
-    stmt = (await db.scalar(select(func.sum(entities.Planet.population_millions)).where(entities.Planet.system_id == system_id))
+async def get_system_population(system_id, db: AsyncSession = Depends(get_db)):
+    stmt = await db.scalar(
+        select(func.sum(entities.Planet.population_millions)).where(
+            entities.Planet.system_id == system_id
+        )
     )
     system = await db.execute(stmt)
     return system.scalars().first()

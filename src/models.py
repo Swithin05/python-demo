@@ -1,8 +1,16 @@
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, NonNegativeInt, PastDatetime, EmailStr
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    NonNegativeInt,
+    PastDatetime,
+    EmailStr,
+)
 
 from .entities import StationType
+
 
 class System(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -62,6 +70,7 @@ class Station(BaseModel):
     type: StationType
     planet_id: UUID
     planet: Planet
+
 
 class CreateSystem(BaseModel):
     name: str
