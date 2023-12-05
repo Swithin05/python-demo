@@ -26,17 +26,17 @@ async def session_cleanup():
 @pytest.fixture
 def mock_post():
     with requests_mock.Mocker() as requests_mocker:
-        requests_mocker.post(
-            "https://jsonplaceholder.typicode.com/users?email=test@gmail.com",  # Match the target URL.
+        requests_mocker.get(
+            "https://jsonplaceholder.typicode.com/users?email=hello@gmail.com",  # Match the target URL.
             status_code=200,  # The status code of the response.
-            json={"name": "tested"},  # Optional. The value when .json() is called on the response.
+            json=[{"name": "tested"}],  # Optional. The value when .json() is called on the response.
         )
 
         yield
 
 
-async def test_planet_creation():
-    request = CreateSystem(name="test", supreme_commander='test@gmail.com')
+async def test_system_creation(mock_post):
+    request = CreateSystem(name="tested", supreme_commander="hello@gmail.com")
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(
@@ -48,5 +48,5 @@ async def test_planet_creation():
 
     system = System.model_validate_json(response.content)
     assert system.name == request.name
-    assert system.supreme_commander == request.supreme_commander
+    assert system.supreme_commander_name == request.name
     assert system.id is not None
